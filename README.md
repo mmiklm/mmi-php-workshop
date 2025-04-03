@@ -442,16 +442,22 @@ Auth::auth() // is authenticated
 Auth::login($user) // log in
 Auth::logout() // log out
 
-// attempt login
-Auth::attempt([ 
+// Attempt login
+// Automatically sets Auth::user() if successful
+$isAttemptSuccessful = Auth::attempt([ 
     'email' => $email,
     'password' => $password,
-]) 
+]);
 ```
 
 Regenerate session:
 ```php
 request()->session()->regenerate();
+```
+
+Regenerate and remove all data from the session:
+```php
+request()->session()->invalidate();
 ```
 
 ## Forms
