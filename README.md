@@ -365,6 +365,56 @@ Directives:
 @enderror
 ```
 
+## Collection
+
+See all available collection methods in the official Laravel documentation: https://laravel.com/docs/11.x/collections#available-methods
+
+```php
+// Create collection
+$collection = collect([1, 2, 3, 4, 5]);
+
+// Get element from collection using key
+$collection = collect([1, 2, 3, 4, 5]);
+$element = $collection->get(2); // 3
+
+// Convert collection to array
+$arrayFromCollection = $collection->toArray();
+
+// "Pluck" value from collection
+$collection = collect([
+    ['product_id' => 'prod-100', 'name' => 'Desk'],
+    ['product_id' => 'prod-200', 'name' => 'Chair'],
+]);
+$plucked = $collection->pluck('name');
+$plucked->all(); // ['Desk', 'Chair']
+
+// "Pluck" value from collection and specify key
+$collection = collect([
+    ['product_id' => 'prod-100', 'name' => 'Desk'],
+    ['product_id' => 'prod-200', 'name' => 'Chair'],
+]);
+$plucked = $collection->pluck('name', 'product_id');
+$plucked->all();
+// ['prod-100' => 'Desk', 'prod-200' => 'Chair']
+
+// Use filter() method
+$collection = collect([1, 2, 3, 4, 5]);
+$filtered = $collection->filter(function (int $value, int $key) {
+    return $value > 2;
+});
+$filtered->all(); // [3, 4, 5]
+
+// Use map() method
+$collection = collect([1, 2, 3, 4, 5]);
+$multiplied = $collection->map(function (int $item, int $key) {
+    return $item * 2;
+});
+$multiplied->all(); // [2, 4, 6, 8, 10]
+
+
+
+```
+
 
 ## Array Class
 
@@ -402,7 +452,7 @@ Auth::attempt([
 
 ## Forms
 
-Input validation: (see all validation options in the documentation)
+Input validation:
 ```php
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
@@ -414,7 +464,10 @@ $request->validate([
 ]);
 ```
 
-To manually throw a validation error:
+See all available validation rules in the official Laravel documentation: https://laravel.com/docs/11.x/validation#available-validation-rules
+
+
+Manually throw a validation error:
 ```php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
