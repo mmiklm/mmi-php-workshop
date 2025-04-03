@@ -582,3 +582,47 @@ npm run dev
 # Bundle assets for deployment
 npm run build
 ```
+
+## File Uploads
+
+To store the file in the `public` directory, set the file system configuration (`FILESYSTEM_DISK`) in the environment file (`.env`) to `public`:
+
+```php
+FILESYSTEM_DISK=public
+```
+
+
+```console
+# Create symbolic link
+php artisan storage:link
+
+# Destroy symbolic link
+php artisan storage:unlink
+```
+
+```php
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Roles\File;
+
+// Validate file including the type
+$request->validate([
+    ...
+    'logo' => [
+        'required', 
+        File::types(['png', 'jpg', 'webp'])
+    ],
+]);
+
+// Save file under "logos" directory (auto-generated filename)
+$path = $request->file('logo')->store('logos', 'public');
+
+// Another way to the save file
+$path = Storage::putFile('logos', $request->file('logo'));
+
+// Save the file using a specific filename (e.g. logo_acme)
+$path = $request->file('logo')->storeAs(
+    'logos', 'logo_' . $companyName
+);
+
+```
