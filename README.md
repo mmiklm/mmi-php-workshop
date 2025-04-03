@@ -56,16 +56,18 @@ php artisan migrate:rollback
 ## Routes
 
 ```php
-
 // Use wildcards and named routes
+// e.g. Handle call to /books/1
 Route::get('/books/{id}', function ($id) {
     return view('books');
 })->name('books.get');
 
 // Call named route from HTML
-{{ route('books', $id) }}
+// e.g. Call /books/1
+{{ route('books', 1) }} 
 
 // Route model binding
+// e.g. Handle call to /books/1/edit
 Route::get('/books/{book}/edit', function (Book $book) {
     return view('books.edit', ['book' => $book]);
 });
@@ -377,7 +379,7 @@ Auth::attempt([
 
 ## Forms
 
-Input validation:
+Input validation: (see all validation options in the documentation)
 ```php
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
