@@ -7,10 +7,21 @@ and here
 
 ## Create a Laravel 11 project
 ```console
-composer create-project laravel/laravel [folder-name] "^11"
+composer create-project laravel/laravel [project-folder-name] "^11"
 ```
 
 ## PHP Artisan Commands
+
+View all artisan commands:
+```console
+php artisan
+```
+
+View options for specific artisan command:
+```console
+# e.g. php artisan help db:seed
+php artisan help [command]
+```
 
 Start local server:
 ```console
@@ -23,10 +34,13 @@ MAKE artisan comands:
 # Create with Factory, Migration and Controller
 php artisan make:model [model_name] -fmc
 
+# e.g. php artisan make:migration create_books_table
 php artisan make:migration [migration_file_name]
 
+# e.g. php artisan make:controller BookController -m Book
 php artisan make:controller [controller_name] -m [model_name]
 
+# e.g. php artisan make:controller BookFactory -m Book
 php artisan make:factory [factory_name] -m [model_name]
 
 php artisan make:seeder [seeder_name]
@@ -52,6 +66,15 @@ php artisan migrate:refresh
 php artisan migrate:rollback
 ```
 
+Run database seeder:
+
+```console
+# Run default seeder class "Database\Seeders\DatabaseSeeder"
+php artisan db:seed
+
+# Run specific seeder class (e.g. BookSeeder)
+php artisan db:seed --class=BookSeeder
+```
 
 ## Routes
 
@@ -446,12 +469,12 @@ Gate::define('edit-book', function (User $user, Book $book) {
     return $book->author->user->is($user);
 });
 
-// In route file:
+// In route file
 Route::get('/books/{book}/edit', [BookController::class, 'edit'])
     ->middleware(['auth'])
     ->can('edit-book', 'book');
 
-// In blade file:
+// In blade file
 @can('book-edit', $book)
 @endcan
 ```
@@ -461,12 +484,12 @@ Using Policy:
 use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 
-// In route file:
+// In route file
 Route::get('/books/{book}/edit', [BookController::class, 'edit'])
     ->middleware(['auth'])
     ->can('edit', 'book');
 
-// In blade file:
+// In blade file
 @can('edit', $book)
 @endcan
 ```
