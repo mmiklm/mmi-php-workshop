@@ -59,7 +59,7 @@ php artisan migrate:rollback
 
 // Use wildcards and named routes
 Route::get('/books/{id}', function ($id) {
-    return view('jobs');
+    return view('books');
 })->name('books.get');
 
 // Call named route from HTML
@@ -71,7 +71,7 @@ Route::get('/books/{book}/edit', function (Book $book) {
 });
 
 // Use controller
-Route::get('/books', [JobController::class, 'index']);
+Route::get('/books', [BookController::class, 'index']);
 ```
 
 
@@ -347,12 +347,12 @@ Directives:
 use Illuminate\Support\Arr;
 
 // Get first item that matches
-Arr::first($jobs, function ($job) use ($id) {
-    return $job['id'] == $id;
+Arr::first($books, function ($book) use ($id) {
+    return $book['id'] == $id;
 });
 
 // Use arrow function
-Arr::first($jobs, fn($job) => $job['id'] == $id);
+Arr::first($books, fn($book) => $book['id'] == $id);
 ```
 
 
