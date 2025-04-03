@@ -465,12 +465,14 @@ request()->session()->invalidate();
 Input validation:
 ```php
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 $request->validate([
     'name' => ['required', 'max:255'],
     'email' => ['required', 'email', 'max:255'],
     'password' => ['required', Password::min(8), 'confirmed'],
+    'type' => ['required', Rule::in(['type-1', 'type-2']),]
 ]);
 ```
 
