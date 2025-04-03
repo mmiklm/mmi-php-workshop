@@ -1,5 +1,10 @@
 # Laravel Cheatsheet
 
+<!---
+your comment goes here
+and here
+-->
+
 ## Create a Laravel 11 project
 ```console
 composer create-project laravel/laravel [folder-name] "^11"
@@ -27,6 +32,7 @@ php artisan make:factory [factory_name] -m [model_name]
 php artisan make:seeder [seeder_name]
 ```
 
+
 Execute/rollback migration:
 
 ```console
@@ -46,16 +52,17 @@ php artisan migrate:refresh
 php artisan migrate:rollback
 ```
 
+
 ## Routes
 
 ```php
 
-// Using wildcards and named routes
+// Use wildcards and named routes
 Route::get('/books/{id}', function ($id) {
     return view('jobs');
 })->name('books.get');
 
-// Calling named route from HTML
+// Call named route from HTML
 {{ route('books', $id) }}
 
 // Route model binding
@@ -63,9 +70,10 @@ Route::get('/books/{book}/edit', function (Book $book) {
     return view('books.edit', ['book' => $book]);
 });
 
-// Pass data using controller
+// Use controller
 Route::get('/books', [JobController::class, 'index']);
 ```
+
 
 ## Migration
 
@@ -96,14 +104,14 @@ Schema::table('books', function (Blueprint $table) {
 
 Set foreign keys:
 ```php
-// Separate defnition of column and setting of FK
+// Define column and set FK separately
 $table->unsignedBigInteger('user_id');
 $table->foreign('user_id')->references('id')->on('users');
 
-// Definition and setting of FK in one line
+// Define column and set FK in one line
 $table->foreignId('user_id')->constrained();
 
-// Setting of onUpdate and onCascade options
+// Set onUpdate and onCascade options
 $table->foreignId('user_id')
     ->constrained()
     ->onUpdate('cascade')
@@ -130,20 +138,50 @@ $table->dropForeign('books_user_id_foreign');
 $table->dropIndex('books_user_id_foreign');
 ```
 
+
 ## Eloquent Model
 
 Eloquent model overrides:
+
 ```php
+// Allow mass assignment for certain fields
 protected $fillable = [
     'title',
     'year',
     'purchase_link'
 ];
 
+// Allow mass assignment for all fields except
+protected $guard = [
+    'id'
+];
+
+// Do not return
+protected $hidden = [
+    'password',
+    'remember_token',
+];
+
+// Define if name of table does not match model name
+// e.g. "book_listing" instead of "books"
 public $table = 'book_listing';
+
+// Do not use timestamps when creating table
+// Need to remove $table->timestamps() in migration
+public $timestamps = false;
+
+// Automatically cast data in column when fetched
+protected function casts(): array
+{
+    return [
+        'created_at' => 'datetime:Y-m-d',
+    ];
+}
+
 ```
 
 Eloquent model database operations:
+
 ```php
 use App\Models\Book;
 
@@ -153,8 +191,11 @@ $books = Book::all();
 // Get all with eager loading of "author" relationship
 $books = Book::with('author')->get();
 
-// Get book with id equals $book_id
-$book = Book::find($book_id);
+// Get book with id equals $bookId
+$book = Book::find($bookId);
+
+// Get all books where year > 2000
+$book = Book::where('year', '>', 2000)->get();
 
 // Create
 $book = Book::create([
@@ -163,24 +204,40 @@ $book = Book::create([
     'purchase_link' => $purchaseLink,
 ]);
 
-// Update
+// Update or Create
+$book = Book::updateOrCreate(
+    [
+        'title' => $title
+    ],
+    [
+        'description' => $description,
+        'year' => $year,
+    ]
+);
+
+// Retrieve and update
+$book = Book::find(1);
 $book->year = 2000;
 $book->save();
 
-// Delete
+// Retrieve and delete
+$book = Book::find(1);
 $book->delete();
+
+// Delete by ID
+Book::destroy(1);
 ```
 
 Pagination:
 ```php
 use App\Models\Book;
 
-// Get all books then paginate:
+// Get all books then paginate
 $books = Book::with('author')->paginate(10);
 $books = Book::with('author')->simplePaginate(10);
 $books = Book::with('author')->cursorPaginate(10);
 
-// Show page links in blade:
+// Show page links in blade
 {{ $books->links() }}
 ```
 
@@ -191,7 +248,7 @@ use App\Models\Book;
 use App\Models\Genre;
 use App\Models\User;
 
-// In Book model:
+// In Book model
 public function author() {
     return $this->belongsTo(Author::class);
 }
@@ -199,13 +256,34 @@ public function genres() {
     return $this->belongsToMany(Genre::class);
 }
 
-// In Author model:
+// In Author model
 public function books() {
     return $this->hasMany(Book::class);
 }
 public function user() {
     return $this->belongsTo(User::class);
 }
+```
+
+Insert/Delete record in a many-to-many relationship's intermediate table:
+```php
+$author = Author::find(1);
+
+// Attach a single book to the author
+$author->books()->attach($bookId);
+
+// Detach all books then attach defined books
+$user->books()->sync([1, 2, 3]);
+
+// Attach multiple books without detaching
+$user->roles()->syncWithoutDetaching([1, 2, 3]);
+
+// Detach a single book from the author
+$author->books()->detach($bookId);
+$user->books()->detach([1, 2, 3]);
+
+// Detach all books from the author
+$author->books()->detach();
 ```
 
 Prevent lazy loading globally:
@@ -217,7 +295,7 @@ use Illuminate\Database\Eloquent\Model;
 Model::preventLazyLoading();
 ```
 
-## Laravel Blade
+## Blade Templates
 
 Using Components:
 
@@ -236,7 +314,7 @@ Using Components:
     {{ $slot }}
 </a>
 
-<!-- Using a named slot --> 
+<!-- Use a named slot --> 
 <x-slot:heading>Home Page</x-slot:heading>
 
 <!-- Refer to named slot --> 
@@ -273,7 +351,7 @@ Arr::first($jobs, function ($job) use ($id) {
     return $job['id'] == $id;
 });
 
-// Using Arrow function
+// Use arrow function
 Arr::first($jobs, fn($job) => $job['id'] == $id);
 ```
 
@@ -355,7 +433,7 @@ Gate::define('edit-book', function (User $user, Book $book) {
     return $book->author->user->is($user);
 });
 
-// Use gate in controller method:
+// Use gate in controller method
 Gate::authorize('edit-book', $book);
 ```
 
@@ -389,4 +467,14 @@ Route::get('/books/{book}/edit', [BookController::class, 'edit'])
 // In blade file:
 @can('edit', $book)
 @endcan
+```
+
+## Asset Bundling using Vite
+
+```php
+# Hot reload asset bundling (for development)
+npm run dev
+
+# Bundle assets for deployment
+npm run build
 ```
