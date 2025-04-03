@@ -449,6 +449,10 @@ Auth::attempt([
 ]) 
 ```
 
+Regenerate session:
+```php
+request()->session()->regenerate();
+```
 
 ## Forms
 
@@ -485,17 +489,28 @@ if (!Auth::attempt($credentials)) {
 }
 ```
 
-Regenerate session:
+Redirecting with flashed session data:
 ```php
-request()->session()->regenerate();
+Route::post('/books/create', function () {
+    // ...
+
+    // Set message in session flash
+    return redirect('/books')->with('message', 'Book successfully added!');
+});
 ```
 
-Check if current request matches the pattern:
-```php
-request()->is('/pattern');
+```html
+<!-- Use "flashed" message in blade -->
+@if (session('message'))
+    <div class="alert alert-success">
+        {{ session('message') }}
+    </div>
+@endif
 ```
+
 
 ## Resource Authorization
+
 Using manual checking:
 ```php
 // In controller method:
@@ -545,6 +560,11 @@ Route::get('/books/{book}/edit', [BookController::class, 'edit'])
 // In blade file
 @can('edit', $book)
 @endcan
+```
+
+Check if current request matches the pattern:
+```php
+request()->is('/pattern');
 ```
 
 ## Asset Bundling using Vite
