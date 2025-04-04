@@ -605,7 +605,7 @@ php artisan storage:unlink
 ```php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Roles\File;
+use Illuminate\Validation\Rules\File;
 
 // Validate file including the type
 $request->validate([
